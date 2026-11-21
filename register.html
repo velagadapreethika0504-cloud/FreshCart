@@ -1,0 +1,103 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreshCart - Register</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .auth-container {
+            max-width: 450px;
+            margin: 50px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .auth-container h2 { text-align: center; color: #218838; }
+        .auth-container input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+        .auth-container button {
+            width: 100%;
+            padding: 12px;
+            background: #218838;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .auth-container p { text-align: center; }
+        .auth-container a { color: #218838; }
+        #message { text-align: center; margin-top: 12px; }
+    </style>
+</head>
+<body>
+
+    <div class="auth-container">
+        <h2>Create Account</h2>
+
+        <form id="registerForm">
+            <input type="text" id="name" placeholder="Full Name" required>
+            <input type="email" id="email" placeholder="Email Address" required>
+            <input type="tel" id="phone" placeholder="10-digit Phone Number"
+                   pattern="[0-9]{10}" required>
+            <input type="password" id="password" placeholder="Password"
+                   minlength="6" required>
+            <input type="password" id="confirmPassword"
+                   placeholder="Confirm Password" minlength="6" required>
+
+            <button type="submit">Register</button>
+        </form>
+
+        <p id="message"></p>
+        <p>Already have an account? <a href="login.html">Login</a></p>
+        <p><a href="index.html">Back to Home</a></p>
+    </div>
+
+    <script>
+        document.getElementById("registerForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const name = document.getElementById("name").value.trim();
+            const email = document.getElementById("email").value.trim().toLowerCase();
+            const phone = document.getElementById("phone").value.trim();
+            const password = document.getElementById("password").value;
+            const confirmPassword = document.getElementById("confirmPassword").value;
+            const message = document.getElementById("message");
+
+            if (password !== confirmPassword) {
+                message.style.color = "red";
+                message.textContent = "Passwords do not match!";
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem("freshCartUsers") || "[]");
+
+            if (users.some(user => user.email === email)) {
+                message.style.color = "red";
+                message.textContent = "Email already registered. Please login.";
+                return;
+            }
+
+            users.push({ name, email, phone, password });
+            localStorage.setItem("freshCartUsers", JSON.stringify(users));
+
+            message.style.color = "green";
+            message.textContent = "Registration successful! Please login.";
+
+            setTimeout(() => {
+                window.location.href = "login.html";
+            }, 1200);
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,214 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Order Successful - FreshCart</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .success-container {
+            max-width: 650px;
+            margin: 70px auto;
+            padding: 40px 25px;
+            background: white;
+            text-align: center;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .success-icon {
+            font-size: 75px;
+            margin-bottom: 20px;
+        }
+
+        .success-container h2 {
+            color: #168b43;
+            margin-bottom: 15px;
+            font-size: 30px;
+        }
+
+        .success-container p {
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .order-details {
+            background: #eaffed;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 10px;
+            text-align: left;
+        }
+
+        .order-details p {
+            margin: 8px 0;
+        }
+
+        .success-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 25px;
+        }
+
+        .success-buttons a {
+            text-decoration: none;
+            background: #168b43;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 6px;
+        }
+
+        .success-buttons a:hover {
+            background: #0d6730;
+        }
+
+        @media(max-width: 600px) {
+            .success-container {
+                margin: 30px 15px;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+
+    <header>
+        <nav class="navbar">
+
+            <h1 class="logo">Fresh<span>Cart</span> 🛒</h1>
+
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="products.html">Products</a></li>
+            </ul>
+
+        </nav>
+    </header>
+
+
+    <!-- SUCCESS MESSAGE -->
+
+    <div class="success-container">
+
+        <div class="success-icon">🎉</div>
+
+        <h2>Order Placed Successfully!</h2>
+
+        <p>
+            Thank you for shopping with FreshCart.
+            Your order has been received successfully.
+        </p>
+
+        <div class="order-details">
+
+            <h3>Order Details</h3>
+
+            <p><strong>Order ID:</strong>
+                <span id="orderId">Loading...</span>
+            </p>
+
+            <p><strong>Customer Name:</strong>
+                <span id="customerName">Loading...</span>
+            </p>
+
+            <p><strong>Order Date:</strong>
+                <span id="orderDate">Loading...</span>
+            </p>
+
+            <p><strong>Payment Method:</strong>
+                <span id="paymentMethod">Loading...</span>
+            </p>
+
+            <p><strong>Order Status:</strong>
+                <span id="orderStatus">Loading...</span>
+            </p>
+
+            <p><strong>Total Amount:</strong>
+                <span id="orderTotal">Loading...</span>
+            </p>
+
+        </div>
+
+        <p>🥦 Fresh groceries will be delivered to your doorstep!</p>
+
+        <div class="success-buttons">
+
+            <a href="products.html">Continue Shopping</a>
+
+            <a href="index.html">Back to Home</a>
+
+        </div>
+
+    </div>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <h2>FreshCart 🛒</h2>
+
+        <p>Freshness Delivered To Your Home!</p>
+
+        <p>Contact: freshcart@gmail.com</p>
+
+        <p>© 2026 FreshCart. All Rights Reserved.</p>
+
+    </footer>
+
+
+    <!-- JAVASCRIPT -->
+
+    <script>
+
+        let orders = JSON.parse(
+            localStorage.getItem("freshCartOrders")
+        ) || [];
+
+        if (orders.length > 0) {
+
+            let latestOrder = orders[orders.length - 1];
+
+            document.getElementById("orderId").innerText =
+                latestOrder.orderId;
+
+            document.getElementById("customerName").innerText =
+                latestOrder.customer.name;
+
+            document.getElementById("orderDate").innerText =
+                latestOrder.orderDate;
+
+            document.getElementById("paymentMethod").innerText =
+                latestOrder.customer.payment;
+
+            document.getElementById("orderStatus").innerText =
+                latestOrder.status;
+
+            document.getElementById("orderTotal").innerText =
+                "₹" + latestOrder.total;
+
+        } else {
+
+            document.querySelector(".success-container").innerHTML = `
+                <h2>No Recent Order Found</h2>
+                <p>Please place an order before visiting this page.</p>
+                <a href="products.html">Shop Now</a>
+            `;
+
+        }
+
+    </script>
+
+</body>
+
+</html>

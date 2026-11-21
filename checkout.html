@@ -1,0 +1,347 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Checkout - FreshCart</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .checkout-container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 30px;
+        }
+
+        .checkout-form,
+        .order-summary {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+        }
+
+        .checkout-form h2,
+        .order-summary h2 {
+            color: #168b43;
+            margin-bottom: 20px;
+        }
+
+        .checkout-form label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 7px;
+            font-weight: bold;
+        }
+
+        .checkout-form input,
+        .checkout-form textarea,
+        .checkout-form select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        .checkout-form textarea {
+            resize: vertical;
+            min-height: 90px;
+        }
+
+        .checkout-form button {
+            width: 100%;
+            margin-top: 25px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .summary-total {
+            border-top: 1px solid #ddd;
+            padding-top: 15px;
+            margin-top: 20px;
+            color: #168b43;
+            font-size: 21px;
+            font-weight: bold;
+        }
+
+        @media(max-width: 700px) {
+            .checkout-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+
+    <header>
+        <nav class="navbar">
+
+            <h1 class="logo">Fresh<span>Cart</span> 🛒</h1>
+
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="products.html">Products</a></li>
+                <li><a href="cart.html">My Cart</a></li>
+            </ul>
+
+        </nav>
+    </header>
+
+
+    <!-- CHECKOUT TITLE -->
+
+    <section class="section">
+        <h2>Checkout 🛍️</h2>
+        <p>Enter your delivery details to place your order.</p>
+    </section>
+
+
+    <div class="checkout-container">
+
+        <!-- CUSTOMER DETAILS -->
+
+        <div class="checkout-form">
+
+            <h2>Delivery Details</h2>
+
+            <form id="checkoutForm">
+
+                <label>Full Name</label>
+                <input type="text" id="customerName"
+                    placeholder="Enter your full name" required>
+
+                <label>Email Address</label>
+                <input type="email" id="customerEmail"
+                    placeholder="Enter your email" required>
+
+                <label>Phone Number</label>
+                <input type="tel" id="customerPhone"
+                    placeholder="Enter 10 digit mobile number"
+                    pattern="[6-9][0-9]{9}"
+                    maxlength="10"
+                    required>
+
+                <label>Delivery Address</label>
+                <textarea id="customerAddress"
+                    placeholder="Enter your complete address"
+                    required></textarea>
+
+                <label>City</label>
+                <input type="text" id="customerCity"
+                    placeholder="Enter your city" required>
+
+                <label>Payment Method</label>
+
+                <select id="paymentMethod" required>
+                    <option value="">Select Payment Method</option>
+                    <option value="Cash on Delivery">Cash on Delivery</option>
+                    <option value="UPI (Demo)">UPI (Demo)</option>
+                    <option value="Card (Demo)">Card (Demo)</option>
+                </select>
+
+                <button type="submit">
+                    Place Order →
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <!-- ORDER SUMMARY -->
+
+        <div class="order-summary">
+
+            <h2>Order Summary</h2>
+
+            <div id="checkoutItems"></div>
+
+            <div class="summary-item">
+                <span>Delivery Charges</span>
+                <span id="deliveryCharge">₹40</span>
+            </div>
+
+            <div class="summary-total">
+                <span>Total Amount</span>
+                <span id="checkoutTotal">₹0</span>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+        <h2>FreshCart 🛒</h2>
+        <p>Freshness Delivered To Your Home!</p>
+        <p>Contact: freshcart@gmail.com</p>
+        <p>© 2026 FreshCart. All Rights Reserved.</p>
+    </footer>
+
+
+    <!-- JAVASCRIPT -->
+
+    <script src="js/script.js"></script>
+
+    <script>
+
+        // DISPLAY ORDER SUMMARY
+
+        function displayCheckout() {
+
+            let itemsContainer =
+                document.getElementById("checkoutItems");
+
+            let total = 0;
+
+            itemsContainer.innerHTML = "";
+
+            if (cart.length === 0) {
+
+                itemsContainer.innerHTML =
+                    "<p>Your cart is empty. Please add products first.</p>";
+
+                document.getElementById("checkoutTotal").innerText = "₹0";
+
+                document.querySelector(
+                    "#checkoutForm button[type='submit']"
+                ).disabled = true;
+
+                return;
+            }
+
+            cart.forEach(function(item) {
+
+                let subtotal = item.price * item.quantity;
+
+                total += subtotal;
+
+                itemsContainer.innerHTML += `
+                    <div class="summary-item">
+                        <span>${item.name} × ${item.quantity}</span>
+                        <span>₹${subtotal}</span>
+                    </div>
+                `;
+
+            });
+
+            let delivery = 40;
+
+            let finalTotal = total + delivery;
+
+            document.getElementById("checkoutTotal").innerText =
+                "₹" + finalTotal;
+
+        }
+
+
+        // PLACE ORDER
+
+        document.getElementById("checkoutForm")
+            .addEventListener("submit", function(event) {
+
+                event.preventDefault();
+
+                if (cart.length === 0) {
+                    alert("Your cart is empty!");
+                    return;
+                }
+
+                let customer = {
+
+                    name: document.getElementById("customerName").value,
+
+                    email: document.getElementById("customerEmail").value,
+
+                    phone: document.getElementById("customerPhone").value,
+
+                    address: document.getElementById("customerAddress").value,
+
+                    city: document.getElementById("customerCity").value,
+
+                    payment: document.getElementById("paymentMethod").value
+
+                };
+
+
+                let total = cart.reduce(function(sum, item) {
+                    return sum + (item.price * item.quantity);
+                }, 0);
+
+                let order = {
+
+                    orderId: "FC" + Date.now(),
+
+                    customer: customer,
+
+                    products: [...cart],
+
+                    total: total + 40,
+
+                    orderDate: new Date().toLocaleString(),
+
+                    status: "Order Placed"
+
+                };
+
+
+                let orders = JSON.parse(
+                    localStorage.getItem("freshCartOrders")
+                ) || [];
+
+                orders.push(order);
+
+                localStorage.setItem(
+                    "freshCartOrders",
+                    JSON.stringify(orders)
+                );
+
+
+                // CLEAR CART AFTER ORDER
+
+                cart = [];
+
+                saveCart();
+
+
+                // SAVE CUSTOMER DETAILS
+
+                localStorage.setItem(
+                    "freshCartCustomer",
+                    JSON.stringify(customer)
+                );
+
+
+                // OPEN ORDER SUCCESS PAGE
+
+                window.location.href = "order-success.html";
+
+            });
+
+
+        document.addEventListener("DOMContentLoaded", displayCheckout);
+
+    </script>
+
+</body>
+
+</html>

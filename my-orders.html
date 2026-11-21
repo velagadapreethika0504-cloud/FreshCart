@@ -1,0 +1,210 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreshCart - My Orders</title>
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .orders-container {
+            max-width: 950px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .orders-container h1 {
+            text-align: center;
+            color: #218838;
+        }
+
+        .order-card {
+            background: white;
+            padding: 22px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+            border-left: 5px solid #218838;
+        }
+
+        .order-card h3 {
+            color: #218838;
+        }
+
+        .order-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .order-details p {
+            margin: 5px 0;
+        }
+
+        .status {
+            color: #218838;
+            font-weight: bold;
+        }
+
+        .empty-orders {
+            text-align: center;
+            background: white;
+            padding: 35px;
+            border-radius: 10px;
+            margin-top: 25px;
+        }
+
+        .shop-button {
+            display: inline-block;
+            padding: 12px 22px;
+            background: #218838;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-top: 15px;
+        }
+
+        @media(max-width: 600px) {
+            .order-details {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="navbar">
+        <h2 class="logo">FreshCart</h2>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="products.html">Products</a>
+            <a href="cart.html">Cart</a>
+            <a href="my-orders.html">My Orders</a>
+        </nav>
+    </header>
+
+    <main class="orders-container">
+        <h1>My Orders</h1>
+        <p style="text-align:center;">
+            View your recent grocery orders here.
+        </p>
+
+        <div id="ordersList"></div>
+    </main>
+
+    <footer>
+        <h2>FreshCart</h2>
+        <p>Your daily grocery shopping partner.</p>
+        <p>© 2026 FreshCart. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        function getValue(order, keys, fallback) {
+            for (const key of keys) {
+                if (order[key] !== undefined && order[key] !== null) {
+                    return order[key];
+                }
+            }
+            return fallback;
+        }
+
+        function displayOrders() {
+            const ordersList = document.getElementById("ordersList");
+
+            let orders = [];
+
+            try {
+                orders = JSON.parse(
+                    localStorage.getItem("freshCartOrders") || "[]"
+                );
+            } catch (error) {
+                orders = [];
+            }
+
+            if (!Array.isArray(orders) || orders.length === 0) {
+                ordersList.innerHTML = `
+                    <div class="empty-orders">
+                        <h2>No Orders Yet!</h2>
+                        <p>You have not placed any orders.</p>
+                        <a href="products.html" class="shop-button">
+                            Start Shopping
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+
+            ordersList.innerHTML = "";
+
+            orders.slice().reverse().forEach(function(order, index) {
+                const orderId = getValue(
+                    order, ["orderId", "id"], "Order " + (orders.length - index)
+                );
+
+                const customerName = getValue(
+                    order, ["customerName", "name"], "Customer"
+                );
+
+                const date = getValue(
+                    order, ["date", "orderDate"], "Not available"
+                );
+
+                const payment = getValue(
+                    order, ["paymentMethod", "payment"], "Not available"
+                );
+
+                const status = getValue(
+                    order, ["status", "orderStatus"], "Placed"
+                );
+
+                const total = Number(getValue(
+                    order, ["total", "grandTotal"], 0
+                ));
+
+                const card = document.createElement("div");
+                card.className = "order-card";
+
+                const heading = document.createElement("h3");
+                heading.textContent = "Order ID: " + orderId;
+
+                const details = document.createElement("div");
+                details.className = "order-details";
+
+                const values = [
+                    ["Customer", customerName],
+                    ["Order Date", date],
+                    ["Payment Method", payment],
+                    ["Order Status", status],
+                    ["Total Amount", "₹" + total.toFixed(2)]
+                ];
+
+                values.forEach(function(item) {
+                    const paragraph = document.createElement("p");
+                    const strong = document.createElement("strong");
+                    strong.textContent = item[0] + ": ";
+                    paragraph.appendChild(strong);
+
+                    const value = document.createElement("span");
+                    value.textContent = item[1];
+
+                    if (item[0] === "Order Status") {
+                        value.className = "status";
+                    }
+
+                    paragraph.appendChild(value);
+                    details.appendChild(paragraph);
+                });
+
+                card.appendChild(heading);
+                card.appendChild(details);
+                ordersList.appendChild(card);
+            });
+        }
+
+        displayOrders();
+    </script>
+
+</body>
+</html>

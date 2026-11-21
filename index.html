@@ -1,0 +1,665 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreshCart - Online Grocery Store</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        /* Settings icon - right corner */
+        .account-area {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            margin-left: auto;
+            position: relative;
+        }
+
+        .settings-button {
+            background: transparent;
+            color: white;
+            border: none;
+            font-size: 26px;
+            cursor: pointer;
+            padding: 5px 10px;
+        }
+
+        .settings-button:hover {
+            color: #d8ffd8;
+        }
+
+        /* Settings dropdown */
+        .settings-menu {
+            display: none;
+            position: absolute;
+            top: 45px;
+            right: 0;
+            width: 190px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .settings-menu.show {
+            display: block;
+        }
+
+        .settings-menu h3 {
+            padding: 12px;
+            color: #168b45;
+            margin: 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .settings-menu a,
+        .settings-menu button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            text-align: left;
+            color: #333;
+            background: white;
+            border: none;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .settings-menu a:hover,
+        .settings-menu button:hover {
+            background: #e9ffed;
+            color: #168b45;
+        }
+
+        .admin-link {
+            color: #fff4a8 !important;
+        }
+
+        /* Home products */
+        .home-products {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 20px;
+            padding: 20px 5%;
+        }
+
+        .home-product {
+            background: white;
+            padding: 15px;
+            text-align: center;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .home-product img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .home-product h3 {
+            margin: 10px 0;
+        }
+
+        .home-product button {
+            background: #168b45;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-top: 8px;
+            cursor: pointer;
+        }
+
+        .home-product button:hover {
+            background: #106b34;
+        }
+
+        /* Categories */
+        .home-categories {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .home-categories a {
+            background: #e9ffed;
+            color: #168b45;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .home-categories a:hover {
+            background: #168b45;
+            color: white;
+        }
+
+        /* Why choose us */
+        .why-us {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .why-card {
+            background: white;
+            padding: 25px;
+            text-align: center;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .home-products {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 600px) {
+            .home-products {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 12px;
+                padding: 15px;
+            }
+
+            .home-product {
+                padding: 10px;
+            }
+
+            .home-product img {
+                height: 120px;
+            }
+
+            .why-us {
+                grid-template-columns: 1fr;
+            }
+
+            .account-area {
+                justify-content: flex-end;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+
+        <h1>FreshCart 🛒</h1>
+
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="products.html">Products</a></li>
+            <li>
+                <a href="cart.html">
+                    Cart (<span id="cart-count">0</span>)
+                </a>
+            </li>
+            <li><a href="my-orders.html">My Orders</a></li>
+            <li><a href="admin-login.html" class="admin-link">Admin</a></li>
+        </ul>
+
+        <!-- ONLY SETTINGS ICON ON RIGHT CORNER -->
+        <div class="account-area" id="accountArea">
+
+            <a href="login.html">Login</a>
+            <a href="register.html">Register</a>
+
+        </div>
+
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+
+        <h1>Welcome to FreshCart!</h1>
+
+        <p>
+            Fresh Fruits, Vegetables and Groceries
+            Delivered to Your Doorstep.
+        </p>
+
+        <a href="products.html">
+            <button>Shop Now</button>
+        </a>
+
+    </section>
+
+    <!-- SEARCH SECTION -->
+    <section>
+
+        <h2>Find Your Favourite Products</h2>
+
+        <div class="search-container">
+
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="Search vegetables, fruits, groceries..."
+                onkeyup="searchProducts()"
+            >
+
+        </div>
+
+    </section>
+
+    <!-- CATEGORIES -->
+    <section>
+
+        <h2>Shop by Categories</h2>
+
+        <div class="home-categories">
+
+            <a href="products.html">All Products</a>
+            <a href="products.html">Vegetables</a>
+            <a href="products.html">Fruits</a>
+            <a href="products.html">Dairy</a>
+            <a href="products.html">Snacks</a>
+            <a href="products.html">Rice & Pulses</a>
+
+        </div>
+
+    </section>
+
+    <!-- OFFERS -->
+    <section class="offers">
+
+        <h2>Special Offers 🎉</h2>
+
+        <h3>Get Fresh Groceries at Best Prices!</h3>
+
+        <p>Shop your daily essentials with FreshCart.</p>
+
+        <br>
+
+        <a href="products.html">
+            <button class="primary">Explore Offers</button>
+        </a>
+
+    </section>
+
+    <!-- BEST SELLING PRODUCTS -->
+    <section>
+
+        <h2>Best Selling Products</h2>
+
+        <div class="home-products">
+
+            <div class="home-product">
+
+                <img
+                    src="https://images.unsplash.com/photo-1546094096-0df4bcaaa337?w=500"
+                    alt="Tomatoes"
+                >
+
+                <h3>Tomatoes</h3>
+                <p>₹30 / kg</p>
+
+                <button onclick="addToCart('Tomatoes', 30)">
+                    Add to Cart
+                </button>
+
+            </div>
+
+            <div class="home-product">
+
+                <img
+                    src="https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=500"
+                    alt="Apples"
+                >
+
+                <h3>Apples</h3>
+                <p>₹120 / kg</p>
+
+                <button onclick="addToCart('Apples', 120)">
+                    Add to Cart
+                </button>
+
+            </div>
+
+            <div class="home-product">
+
+                <img
+                    src="https://images.unsplash.com/photo-1445282768818-728615cc910a?w=500"
+                    alt="Carrots"
+                >
+
+                <h3>Carrots</h3>
+                <p>₹40 / kg</p>
+
+                <button onclick="addToCart('Carrots', 40)">
+                    Add to Cart
+                </button>
+
+            </div>
+
+            <div class="home-product">
+
+                <img
+                    src="https://images.unsplash.com/photo-1563636619-e9143da7973b?w=500"
+                    alt="Milk"
+                >
+
+                <h3>Milk</h3>
+                <p>₹30 / litre</p>
+
+                <button onclick="addToCart('Milk', 30)">
+                    Add to Cart
+                </button>
+
+            </div>
+
+        </div>
+
+        <div style="text-align:center; margin:20px;">
+
+            <a href="products.html">
+                <button class="primary">View All Products</button>
+            </a>
+
+        </div>
+
+    </section>
+
+    <!-- WHY CHOOSE US -->
+    <section>
+
+        <h2>Why Choose FreshCart?</h2>
+
+        <div class="why-us">
+
+            <div class="why-card">
+
+                <h3>🥦 Fresh Products</h3>
+
+                <p>
+                    We provide fresh and quality groceries
+                    for your family.
+                </p>
+
+            </div>
+
+            <div class="why-card">
+
+                <h3>🚚 Fast Delivery</h3>
+
+                <p>
+                    Get your grocery products delivered
+                    to your doorstep.
+                </p>
+
+            </div>
+
+            <div class="why-card">
+
+                <h3>💰 Best Prices</h3>
+
+                <p>
+                    Shop your daily essentials
+                    at affordable prices.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+
+        <h2>FreshCart 🛒</h2>
+
+        <p>Your Daily Grocery Shopping Partner</p>
+
+        <p>Contact: support@freshcart.com</p>
+
+        <p>© 2026 FreshCart. All Rights Reserved.</p>
+
+    </footer>
+
+    <!-- MAIN JAVASCRIPT -->
+    <script src="js/script.js"></script>
+
+    <!-- SETTINGS JAVASCRIPT -->
+    <script>
+
+        // Check customer login and display settings icon
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const accountArea = document.getElementById("accountArea");
+
+            let loggedInUser = null;
+
+            try {
+                loggedInUser = JSON.parse(
+                    localStorage.getItem("freshCartLoggedInUser") || "null"
+                );
+            } catch (error) {
+                loggedInUser = null;
+            }
+
+            if (loggedInUser) {
+
+                accountArea.innerHTML = `
+
+                    <button
+                        class="settings-button"
+                        onclick="toggleSettings()"
+                        title="Settings"
+                        aria-label="Settings"
+                    >
+                        ⚙️
+                    </button>
+
+                    <div class="settings-menu" id="settingsMenu">
+
+                        <h3>Settings</h3>
+
+                        <button onclick="changeCustomerName()">
+                            👤 Change Name
+                        </button>
+
+                        <button onclick="changeCustomerPassword()">
+                            🔒 Change Password
+                        </button>
+
+                        <a href="my-orders.html">
+                            🛍️ My Orders
+                        </a>
+
+                        <button onclick="logoutUser()">
+                            🚪 Logout
+                        </button>
+
+                    </div>
+
+                `;
+
+            } else {
+
+                accountArea.innerHTML = `
+                    <a href="login.html">Login</a>
+                    <a href="register.html">Register</a>
+                `;
+
+            }
+
+        });
+
+
+        // Open and close settings
+        function toggleSettings() {
+
+            const menu = document.getElementById("settingsMenu");
+
+            if (menu) {
+                menu.classList.toggle("show");
+            }
+
+        }
+
+
+        // Change customer name
+        function changeCustomerName() {
+
+            let user = JSON.parse(
+                localStorage.getItem("freshCartLoggedInUser") || "null"
+            );
+
+            if (!user) {
+                alert("Please login first!");
+                return;
+            }
+
+            let newName = prompt("Enter your new name:");
+
+            if (!newName || !newName.trim()) {
+                return;
+            }
+
+            newName = newName.trim();
+
+            let users = JSON.parse(
+                localStorage.getItem("freshCartUsers") || "[]"
+            );
+
+            let index = users.findIndex(
+                u => u.email === user.email
+            );
+
+            user.name = newName;
+
+            localStorage.setItem(
+                "freshCartLoggedInUser",
+                JSON.stringify(user)
+            );
+
+            if (index !== -1) {
+
+                users[index].name = newName;
+
+                localStorage.setItem(
+                    "freshCartUsers",
+                    JSON.stringify(users)
+                );
+
+            }
+
+            alert("Name changed successfully!");
+
+            location.reload();
+
+        }
+
+
+        // Change customer password
+        function changeCustomerPassword() {
+
+            let user = JSON.parse(
+                localStorage.getItem("freshCartLoggedInUser") || "null"
+            );
+
+            if (!user) {
+                alert("Please login first!");
+                return;
+            }
+
+            let users = JSON.parse(
+                localStorage.getItem("freshCartUsers") || "[]"
+            );
+
+            let index = users.findIndex(
+                u => u.email === user.email
+            );
+
+            if (index === -1) {
+                alert("User account not found!");
+                return;
+            }
+
+            let oldPassword = prompt("Enter current password:");
+
+            if (oldPassword === null) {
+                return;
+            }
+
+            if (oldPassword !== users[index].password) {
+
+                alert("Current password is incorrect!");
+
+                return;
+
+            }
+
+            let newPassword = prompt("Enter new password:");
+
+            if (newPassword === null) {
+                return;
+            }
+
+            if (newPassword.trim().length < 6) {
+
+                alert("Password must contain at least 6 characters!");
+
+                return;
+
+            }
+
+            users[index].password = newPassword.trim();
+
+            localStorage.setItem(
+                "freshCartUsers",
+                JSON.stringify(users)
+            );
+
+            alert("Password changed successfully!");
+
+        }
+
+
+        // Customer logout
+        function logoutUser() {
+
+            localStorage.removeItem("freshCartLoggedInUser");
+
+            alert("You have logged out successfully!");
+
+            window.location.href = "index.html";
+
+        }
+
+
+        // Close settings when clicking outside
+        document.addEventListener("click", function (event) {
+
+            const accountArea = document.getElementById("accountArea");
+
+            const menu = document.getElementById("settingsMenu");
+
+            if (
+                menu &&
+                accountArea &&
+                !accountArea.contains(event.target)
+            ) {
+
+                menu.classList.remove("show");
+
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>

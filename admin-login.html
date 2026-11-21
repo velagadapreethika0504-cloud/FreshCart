@@ -1,0 +1,108 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreshCart - Admin Login</title>
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .admin-login-container {
+            max-width: 420px;
+            margin: 70px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .admin-login-container h2 {
+            text-align: center;
+            color: #218838;
+        }
+
+        .admin-login-container input {
+            width: 100%;
+            padding: 12px;
+            margin: 12px 0;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        .admin-login-container button {
+            width: 100%;
+            padding: 12px;
+            background: #218838;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        #message {
+            text-align: center;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="admin-login-container">
+        <h2>FreshCart Admin</h2>
+        <p style="text-align:center;">Login to manage customer orders</p>
+
+        <form id="adminLoginForm">
+            <input
+                type="text"
+                id="adminUsername"
+                placeholder="Admin Username"
+                required
+            >
+
+            <input
+                type="password"
+                id="adminPassword"
+                placeholder="Admin Password"
+                required
+            >
+
+            <button type="submit">Admin Login</button>
+        </form>
+
+        <p id="message"></p>
+
+        <p style="text-align:center;">
+            <a href="index.html">Back to Home</a>
+        </p>
+    </div>
+
+    <script>
+        document.getElementById("adminLoginForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const username = document.getElementById("adminUsername").value.trim();
+            const password = document.getElementById("adminPassword").value;
+            const message = document.getElementById("message");
+
+            // Demo credentials only
+            if (username === "admin" && password === "admin123") {
+                localStorage.setItem("freshCartAdminLoggedIn", "true");
+
+                message.style.color = "green";
+                message.textContent = "Login successful!";
+
+                setTimeout(function() {
+                    window.location.href = "admin.html";
+                }, 1000);
+            } else {
+                message.style.color = "red";
+                message.textContent = "Invalid admin username or password!";
+            }
+        });
+    </script>
+
+</body>
+</html>

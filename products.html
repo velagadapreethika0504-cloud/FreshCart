@@ -1,0 +1,348 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreshCart - Products</title>
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .products-page {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+
+        .products-page h1 {
+            text-align: center;
+            color: #218838;
+        }
+
+        .filter-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 25px 0;
+        }
+
+        .filter-buttons button {
+            padding: 10px 18px;
+            border: none;
+            background: #218838;
+            color: white;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .filter-buttons button:hover {
+            background: #155724;
+        }
+
+        .product-search {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .product-search input {
+            width: 300px;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        .product-search button {
+            padding: 12px 20px;
+            background: #218838;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 22px;
+            margin-top: 30px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            text-align: center;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+            padding-bottom: 18px;
+            transition: transform 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .product-card h3 {
+            margin: 12px 5px 5px;
+        }
+
+        .product-card p {
+            color: #218838;
+            font-weight: bold;
+        }
+
+        .product-card button {
+            padding: 10px 18px;
+            background: #218838;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .product-card button:hover {
+            background: #155724;
+        }
+
+        #noProducts {
+            display: none;
+            text-align: center;
+            grid-column: 1 / -1;
+        }
+
+        @media(max-width: 900px) {
+            .product-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media(max-width: 500px) {
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .product-search input {
+                width: 65%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <header class="navbar">
+        <h2 class="logo">FreshCart</h2>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="products.html">Products</a>
+            <a href="cart.html">Cart (<span id="cart-count">0</span>)</a>
+            <a href="my-orders.html">My Orders</a>
+        </nav>
+    </header>
+
+    <!-- Products Section -->
+    <main class="products-page">
+
+        <h1>Our Grocery Products</h1>
+        <p style="text-align:center;">
+            Fresh and quality groceries at affordable prices!
+        </p>
+
+        <!-- Search -->
+        <div class="product-search">
+            <input type="text" id="searchInput"
+                   placeholder="Search groceries...">
+            <button onclick="searchProducts()">Search</button>
+        </div>
+
+        <!-- Category Filters -->
+        <div class="filter-buttons">
+            <button onclick="filterProducts('All')">All</button>
+            <button onclick="filterProducts('Vegetables')">Vegetables</button>
+            <button onclick="filterProducts('Fruits')">Fruits</button>
+            <button onclick="filterProducts('Dairy')">Dairy</button>
+            <button onclick="filterProducts('Snacks')">Snacks</button>
+            <button onclick="filterProducts('Rice & Pulses')">Rice & Pulses</button>
+        </div>
+
+        <!-- Product Cards -->
+        <div class="product-grid">
+
+            <div class="product product-card" data-category="Vegetables">
+                <img src="https://images.unsplash.com/photo-1546094096-0df4bcaaa337?w=500" alt="Tomatoes">
+                <h3>Tomato</h3>
+                <p>₹30 / kg</p>
+                <button onclick="addToCart('Tomato',30)">Add to Cart</button>
+            </div>
+
+            <div class="product product-card" data-category="Vegetables">
+                <img src="https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=500" alt="Potatoes">
+                <h3>Potato</h3>
+                <p>₹25 / kg</p>
+                <button onclick="addToCart('Potato',25)">Add to Cart</button>
+            </div>
+
+            <div class="product product-card" data-category="Vegetables">
+                <img src="https://images.unsplash.com/photo-1445282768818-728615cc910a?w=500" alt="Carrots">
+                <h3>Carrot</h3>
+                <p>₹40 / kg</p>
+                <button onclick="addToCart('Carrot',40)">Add to Cart</button>
+            </div>
+
+            <div class="product product-card" data-category="Vegetables">
+                <img src="https://images.unsplash.com/photo-1566385101042-1a0aa0c1268c?w=500" alt="Broccoli">
+                <h3>Broccoli</h3>
+                <p>₹60 / piece</p>
+                <button onclick="addToCart('Broccoli',60)">Add to Cart</button>
+            </div>
+
+            <div class="product product-card" data-category="Fruits">
+                <img src="https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=500" alt="Apples">
+                <h3>Apple</h3>
+                <p>₹120 / kg</p>
+                <button onclick="addToCart('Apple',120)">Add to Cart</button>
+            </div>
+
+            <div class="product product-card" data-category="Fruits">
+                <img src="https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=500" alt="Bananas">
+                <h3>Banana</h3>
+                <p>₹50 / dozen</p>
+                <button onclick="addToCart('Banana',50)">Add to Cart</button>
+            </div>
+
+            <div class="product product-card" data-category="Fruits">
+                <img src="https://images.unsplash.com/photo-1547514701-42782101795e?w=500" alt="Oranges">
+                <h3>Orange</h3>
+                <p>₹80 / kg</p>
+                <button onclick="addToCart('Orange',80)">Add to Cart</button>
+            </div>
+
+            <div class="product product-card" data-category="Fruits">
+                <img src="https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?w=500" alt="Strawberries">
+                <h3>Strawberry</h3>
+                <p>₹150 / box</p>
+                <button onclick="addToCart('Strawberry',150)">Add to Cart</button>
+            </div>
+
+            <div class="product product-card" data-category="Dairy">
+                <img src="https://images.unsplash.com/photo-1550583724-b2692b85b150?w=500" alt="Milk">
+                <h3>Milk</h3>
+                <p>₹30 / litre</p>
+                <button onclick="addToCart('Milk',30)">Add to Cart</button>
+            </div>
+
+            <div class="product product-card" data-category="Dairy">
+                <img src="https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?w=500" alt="Cheese">
+                <h3>Cheese</h3>
+                <p>₹100 / pack</p>
+                <button onclick="addToCart('Cheese',100)">Add to Cart</button>
+            </div>
+
+            <div class="product product-card" data-category="Dairy">
+                <img src="https://images.unsplash.com/photo-1571212515416-fef01fc43637?w=500" alt="Butter">
+                <h3>Butter</h3>
+                <p>₹55 / pack</p>
+                <button onclick="addToCart('Butter',55)">Add to Cart</button>
+            </div>
+
+            <div class="product product-card" data-category="Snacks">
+                <img src="https://images.unsplash.com/photo-1621939514649-280e2aa5f1e9?w=500" alt="Cookies">
+                <h3>Cookies</h3>
+                <p>₹40 / pack</p>
+                <button onclick="addToCart('Cookies',40)">Add to Cart</button>
+            </div>
+
+            <div class="product product-card" data-category="Snacks">
+                <img src="https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=500" alt="Chips">
+                <h3>Chips</h3>
+                <p>₹20 / pack</p>
+                <button onclick="addToCart('Chips',20)">Add to Cart</button>
+            </div>
+
+            <div class="product product-card" data-category="Rice & Pulses">
+                <img src="https://images.unsplash.com/photo-1586201375761-83865001e31c?w=500" alt="Rice">
+                <h3>Rice</h3>
+                <p>₹60 / kg</p>
+                <button onclick="addToCart('Rice',60)">Add to Cart</button>
+            </div>
+
+            <div class="product product-card" data-category="Rice & Pulses">
+                <img src="https://images.unsplash.com/photo-1515543904379-3d757afe72e4?w=500" alt="Pulses">
+                <h3>Dal</h3>
+                <p>₹90 / kg</p>
+                <button onclick="addToCart('Dal',90)">Add to Cart</button>
+            </div>
+
+            <p id="noProducts">No products found!</p>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <h2>FreshCart</h2>
+        <p>Your daily grocery shopping partner.</p>
+        <p>Contact: support@freshcart.com</p>
+        <p>© 2026 FreshCart. All Rights Reserved.</p>
+    </footer>
+
+    <script src="js/script.js"></script>
+
+    <script>
+        // Search products on this page
+        function searchProducts() {
+            const searchValue = document.getElementById("searchInput")
+                .value.toLowerCase().trim();
+
+            const products = document.querySelectorAll(".product-card");
+            let visibleCount = 0;
+
+            products.forEach(function(product) {
+                const productName = product.textContent.toLowerCase();
+
+                if (productName.includes(searchValue)) {
+                    product.style.display = "block";
+                    visibleCount++;
+                } else {
+                    product.style.display = "none";
+                }
+            });
+
+            document.getElementById("noProducts").style.display =
+                visibleCount === 0 ? "block" : "none";
+        }
+
+        // Filter products by category
+        function filterProducts(category) {
+            document.getElementById("searchInput").value = "";
+
+            const products = document.querySelectorAll(".product-card");
+            let visibleCount = 0;
+
+            products.forEach(function(product) {
+                const productCategory = product.getAttribute("data-category");
+
+                if (category === "All" || productCategory === category) {
+                    product.style.display = "block";
+                    visibleCount++;
+                } else {
+                    product.style.display = "none";
+                }
+            });
+
+            document.getElementById("noProducts").style.display =
+                visibleCount === 0 ? "block" : "none";
+        }
+    </script>
+
+</body>
+</html>
