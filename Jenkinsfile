@@ -45,7 +45,7 @@ pipeline {
 
                 withCredentials([
                     string(
-                        credentialsId: 'dockerhub-token',
+                        credentialsId: 'freshcart-docker-token',
                         variable: 'DOCKER_PASS'
                     )
                 ]) {
