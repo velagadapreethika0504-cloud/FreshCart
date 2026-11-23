@@ -3,13 +3,9 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'ruksar786dev/freshcart'
-        DOCKER_TAG = 'latest'
-        K8S_DEPLOYMENT = 'freshcart'
-        K8S_CONTAINER = 'freshcart'
-
-        DOCKER_PATH = 'C:\\Users\\PREETHIKA\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker.exe'
-        KUBECTL_PATH = 'C:\\Users\\PREETHIKA\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\kubectl.exe'
+        DOCKER_PATH = 'C:/Users/PREETHIKA/AppData/Local/Programs/DockerDesktop/resources/bin/docker.exe'
+        KUBECTL_PATH = 'C:/Users/PREETHIKA/AppData/Local/Programs/DockerDesktop/resources/bin/kubectl.exe'
+        DOCKER_IMAGE = 'ruksar786dev/freshcart:latest'
     }
 
     stages {
@@ -32,10 +28,7 @@ pipeline {
         stage('Docker Build') {
             steps {
                 echo 'Building FreshCart Docker Image'
-
-                bat '''
-                    "%DOCKER_PATH%" build -t %DOCKER_IMAGE%:%DOCKER_TAG% .
-                '''
+                bat '"%DOCKER_PATH%" build -t %DOCKER_IMAGE% .'
             }
         }
 
@@ -43,14 +36,18 @@ pipeline {
             steps {
                 echo 'Logging into Docker Hub'
 
-                withCredentials([
-                    string(
-                        credentialsId: 'freshcart-docker-token',
-                        variable: 'DOCKER_PASS'
-                    )
-                ]) {
+                withCredentials([usernamePassword(
+                    credentialsId: 'freshcart-docker-login',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
                     bat '''
-                        powershell -NoProfile -NonInteractive -Command "$env:DOCKER_PASS | & '%DOCKER_PATH%' login -u 'ruksar786dev' --password-stdin"
+                        @echo off
+                        if not defined DOCKER_PASS (
+                            echo ERROR: Docker password is empty
+                            exit /b 1
+                        )
+                        echo %DOCKER_PASS% | "%DOCKER_PATH%" login -u "%DOCKER_USER%" --password-stdin
                     '''
                 }
             }
@@ -59,10 +56,7 @@ pipeline {
         stage('Docker Push') {
             steps {
                 echo 'Pushing FreshCart Image to Docker Hub'
-
-                bat '''
-                    "%DOCKER_PATH%" push %DOCKER_IMAGE%:%DOCKER_TAG%
-                '''
+                bat '"%DOCKER_PATH%" push %DOCKER_IMAGE%'
             }
         }
 
@@ -71,16 +65,15 @@ pipeline {
                 echo 'Deploying FreshCart to Kubernetes'
 
                 bat '''
-                    "%KUBECTL_PATH%" set image deployment/%K8S_DEPLOYMENT% %K8S_CONTAINER%=%DOCKER_IMAGE%:%DOCKER_TAG%
-
-                    "%KUBECTL_PATH%" rollout status deployment/%K8S_DEPLOYMENT% --timeout=120s
+                    "%KUBECTL_PATH%" set image deployment/freshcart freshcart=%DOCKER_IMAGE%
+                    "%KUBECTL_PATH%" rollout status deployment/freshcart --timeout=120s
                 '''
             }
         }
 
         stage('Verify Deployment') {
             steps {
-                echo 'Verifying Kubernetes Deployment'
+                echo 'Checking Kubernetes Deployment'
 
                 bat '''
                     "%KUBECTL_PATH%" get deployments
@@ -93,7 +86,7 @@ pipeline {
 
     post {
         success {
-            echo 'SUCCESS: FreshCart CI/CD Pipeline Completed!'
+            echo 'FreshCart CI/CD Pipeline Executed Successfully!'
         }
 
         failure {
